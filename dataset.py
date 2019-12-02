@@ -15,7 +15,7 @@ def download_image(data_dir, url, target_size=None):
   return np.array(img)
 
 
-def deprocess_img(img):
+def deprocess_img(images):
   """Convert range of image from [-1, 1] into [0, 255]"""
-  img = 255 * ((img + 1.0) / 2.0)
-  return tf.cast(img, tf.uint8)
+  images = 255 * ((images + 1.0) / 2.0)
+  return tf.cast(images, tf.uint8)

@@ -23,7 +23,7 @@ def train(model, images, num_steps, learning_rate):
 
     if step % 100 == 0:
       print("Step {}, losses {}".format(step, losses))
-      # save_img(deprocess_img(img), step)
+      save_img(deprocess_img(images), step)
 
 
 @tf.function
@@ -39,9 +39,10 @@ def training_step(model, images, learning_rate):
   # Normalize the gradients.
   # grad /= tf.math.reduce_std(grad) + 1e-8
 
-  images[0] = images[0] + grad_mix1 * learning_rate
-  images[1] = images[1] + grad_mix3 * learning_rate
-  images[2] = images[2] + grad_mix5 * learning_rate
+  images = (images[0] + grad_mix1 * learning_rate,
+            images[1] + grad_mix3 * learning_rate,
+            images[2] + grad_mix5 * learning_rate)
+
   images = tf.clip_by_value(images, -1, 1)
 
   return losses, images
@@ -59,7 +60,7 @@ def main(_):
   img_mixed1 = img.copy()
   img_mixed3 = img.copy()
   img_mixed5 = img.copy()
-  images = np.array((img_mixed1, img_mixed3, img_mixed5))
+  images = tf.stack((img_mixed1, img_mixed3, img_mixed5), axis=0)
 
   model = deepdream()
 
