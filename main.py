@@ -12,13 +12,41 @@ from dataset import download_image
 from dataset import deprocess_img
 from model import deepdream
 from model import loss_fn
-from utils import imshow
+from utils import save_img 
 
 
 FLAGS = flags.FLAGS
 
+  
+def train(model, img, num_steps, learning_rate):
+  for step in range(num_steps):
+    loss, img = training_step(model, img, learning_rate)
+
+    if step % 100 == 0:
+      print ("Step {}, loss {}".format(step, loss))
+      save_img(deprocess_img(img), step)
+
+
+@tf.function
+def training_step(model, img, learning_rate):
+  with tf.GradientTape() as tape:
+    tape.watch(img)
+    loss = loss_fn(img, model)
+  grad = tape.gradient(loss, img)
+
+  # Normalize the gradients.
+  grad /= tf.math.reduce_std(grad) + 1e-8
+
+  img = img + grad * learning_rate
+  img = tf.clip_by_value(img, -1, 1)
+
+  return loss, img
+
 
 def main(_):
+  if not os.path.isdir('sample'):
+    os.mkdir('sample')
+
   img = download_image(FLAGS.data_dir, FLAGS.URL,
                        (FLAGS.target_height, FLAGS.target_width))
   # Convert the range expected by the model.
@@ -27,27 +55,6 @@ def main(_):
   model = deepdream()
 
   train(model, img, FLAGS.num_steps, FLAGS.learning_rate)
-  # result = deprocess_img(img)
-  # imshow(result)
-  
-
-@tf.function
-def train(model, img, num_steps, learning_rate):
-  for step in range(num_steps):
-    with tf.GradientTape() as tape:
-      tape.watch(img)
-      loss = loss_fn(img, model)
-    grad = tape.gradient(loss, img)
-
-    # Normalize the gradients.
-    grad /= tf.math.reduce_std(grad) + 1e-8
-
-    img = img + grad * learning_rate
-    img = tf.clip_by_value(img, -1, 1)
-
-    # if step % 100 == 0:
-      # imshow(deprocess_img(img))
-    tf.print(step, loss)
 
 
 if __name__ == '__main__':
