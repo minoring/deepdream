@@ -1,6 +1,5 @@
 """Runs deepdream on the image"""
 import os
-import sys
 
 from absl import app
 from absl import flags
@@ -27,7 +26,7 @@ def main(_):
 
   model = deepdream()
 
-  train(model, img, 800, 0.001)
+  train(model, img, FLAGS.num_steps, FLAGS.learning_rate)
   # result = deprocess_img(img)
   # imshow(result)
   
@@ -48,7 +47,7 @@ def train(model, img, num_steps, learning_rate):
 
     # if step % 100 == 0:
       # imshow(deprocess_img(img))
-    tf.print(step, loss, output_stream=sys.stdout)
+    tf.print(step, loss)
 
 
 if __name__ == '__main__':
