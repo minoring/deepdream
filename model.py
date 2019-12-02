@@ -18,20 +18,21 @@ def deepdream():
   return tf.keras.Model(inputs=base_model.input, outputs=layers)
 
 
-def loss_fn(img, model):
+def loss_fn(images, model):
   """Calculate loss that is maximized via gradient ascent.
 
   The loss is normalized at each layer so the contribution from larger layers
   does not outweigh smaller layer.
   """
   # Pass forward the image through the model to retrieve the activations.
-  # Converts the image into batch of size 1.
-  img_batch = tf.expand_dims(img, axis=0)
-  layer_activations = model(img_batch)
+  # Converts the images into batch
+  # img_batch = tf.stack(images, axis=0)
 
-  losses = []
-  for act in layer_activations:
-    loss = tf.math.reduce_mean(act)
-    losses.append(loss)
+  layer_activations = model(images)
+
+  loss_mix1 = tf.math.reduce_mean(layer_activations[0][0])
+  loss_mix3 = tf.math.reduce_mean(layer_activations[1][1])
+  loss_mix5 = tf.math.reduce_mean(layer_activations[2][2])
+
   
-  return tf.reduce_sum(losses)
+  return loss_mix1, loss_mix3, loss_mix5
