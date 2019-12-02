@@ -9,4 +9,4 @@ def save_img(images, step):
     axarr[i].axis('off')
     axarr[i].set_title('Layer {}'.format(i + 1))
   fig.savefig('./sample/{}step_img.jpg'.format(step))
-  fig.clf()
+  plt.close(fig)
