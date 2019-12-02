@@ -37,9 +37,9 @@ def training_step(model, images, learning_rate):
   del tape
 
   # Normalize the gradients.
-  grad_mix1 = tf.math.reduce_std(grad_mix1) + 1e-8
-  grad_mix3 = tf.math.reduce_std(grad_mix3) + 1e-8
-  grad_mix5 = tf.math.reduce_std(grad_mix5) + 1e-8
+  # grad_mix1 = tf.math.reduce_std(grad_mix1) + 1e-8
+  # grad_mix3 = tf.math.reduce_std(grad_mix3) + 1e-8
+  # grad_mix5 = tf.math.reduce_std(grad_mix5) + 1e-8
 
   images = (images[0] + grad_mix1 * learning_rate,
             images[1] + grad_mix3 * learning_rate,
