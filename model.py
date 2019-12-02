@@ -11,7 +11,7 @@ def deepdream():
   base_model = inception_v3()
 
   # Maximize the activations of these layers
-  names = ['mixed1', 'mixed5', 'mixed8']
+  names = ['mixed1', 'mixed3', 'mixed5']
   layers = [base_model.get_layer(name).output for name in names]
 
   # Create the feature extraction model
