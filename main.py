@@ -12,35 +12,39 @@ from dataset import download_image
 from dataset import deprocess_img
 from model import deepdream
 from model import loss_fn
-from utils import save_img 
-
+from utils import save_img
 
 FLAGS = flags.FLAGS
 
-  
-def train(model, img, num_steps, learning_rate):
+
+def train(model, images, num_steps, learning_rate):
   for step in range(num_steps):
-    loss, img = training_step(model, img, learning_rate)
+    losses, images = training_step(model, images, learning_rate)
 
     if step % 100 == 0:
-      print ("Step {}, loss {}".format(step, loss))
-      save_img(deprocess_img(img), step)
+      print("Step {}, losses {}".format(step, losses))
+      # save_img(deprocess_img(img), step)
 
 
 @tf.function
-def training_step(model, img, learning_rate):
-  with tf.GradientTape() as tape:
-    tape.watch(img)
-    loss = loss_fn(img, model)
-  grad = tape.gradient(loss, img)
+def training_step(model, images, learning_rate):
+  with tf.GradientTape(persistent=True) as tape:
+    tape.watch(images)
+    losses = loss_fn(images, model)
+  grad_mix1 = tape.gradient(losses[0], images)[0]
+  grad_mix3 = tape.gradient(losses[1], images)[1]
+  grad_mix5 = tape.gradient(losses[2], images)[2]
+  del tape
 
   # Normalize the gradients.
-  grad /= tf.math.reduce_std(grad) + 1e-8
+  # grad /= tf.math.reduce_std(grad) + 1e-8
 
-  img = img + grad * learning_rate
-  img = tf.clip_by_value(img, -1, 1)
+  images[0] = images[0] + grad_mix1 * learning_rate
+  images[1] = images[1] + grad_mix3 * learning_rate
+  images[2] = images[2] + grad_mix5 * learning_rate
+  images = tf.clip_by_value(images, -1, 1)
 
-  return loss, img
+  return losses, images
 
 
 def main(_):
@@ -52,9 +56,14 @@ def main(_):
   # Convert the range expected by the model.
   img = tf.keras.applications.inception_v3.preprocess_input(img)
 
+  img_mixed1 = img.copy()
+  img_mixed3 = img.copy()
+  img_mixed5 = img.copy()
+  images = np.array((img_mixed1, img_mixed3, img_mixed5))
+
   model = deepdream()
 
-  train(model, img, FLAGS.num_steps, FLAGS.learning_rate)
+  train(model, images, FLAGS.num_steps, FLAGS.learning_rate)
 
 
 if __name__ == '__main__':

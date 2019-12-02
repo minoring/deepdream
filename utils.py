@@ -8,5 +8,4 @@ def save_img(img, step):
   plt.axis('off')
   plt.imshow(img)
   plt.savefig('./sample/{}step_img.jpg'.format(step))
-
   plt.clf()
