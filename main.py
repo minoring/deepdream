@@ -14,6 +14,7 @@ from dataset import random_roll
 from model import deepdream
 from model import loss_fn
 from utils import save_img
+from utils import create_gif
 
 FLAGS = flags.FLAGS
 
@@ -39,7 +40,8 @@ def train(model, img, num_steps, learning_rate):
       grads = get_tiled_gradient(model, img)
       img = img + grads * learning_rate
       img = tf.clip_by_value(img, -1, 1)
-      if step % 100 == 0:
+      if step % 30 == 0:
+        print('Octave {} Step {}'.format(octave, step))
         save_img(deprocess_img(img), step, octave)
 
 
@@ -96,6 +98,7 @@ def main(_):
                        (FLAGS.target_height, FLAGS.target_width))
   model = deepdream()
   train(model, img, FLAGS.num_steps, FLAGS.learning_rate)
+  create_gif()
 
 
 if __name__ == '__main__':
