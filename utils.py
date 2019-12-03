@@ -1,12 +1,11 @@
 import matplotlib.pyplot as plt
 
 
-def save_img(images, step):
-  """Save images"""
-  fig, axarr = plt.subplots(1, len(images))
-  for i in range(len(images)):
-    axarr[i].imshow(images[i])
-    axarr[i].axis('off')
-    axarr[i].set_title('Layer {}'.format(i + 1))
-  fig.savefig('./sample/{}step_img.jpg'.format(step))
-  plt.close(fig)
+def save_img(img, step, loss):
+  """Save image"""
+  plt.figure()
+  plt.imshow(img)
+  plt.axis('off')
+  plt.title('Step {} Loss {}'.format(step, loss))
+  plt.savefig('./sample/{}step_img.jpg'.format(step))
+  plt.close('all')
