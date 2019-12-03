@@ -37,7 +37,7 @@ def train(model, img, num_steps, learning_rate):
       img = tf.image.resize(img, tf.cast(new_size, tf.int32))
 
     for step in range(num_steps + 1):
-      grads = get_tiled_gradient(model, img)
+      grads = get_tiled_gradient(model, img, FLAGS.tile_size)
       img = img + grads * learning_rate
       img = tf.clip_by_value(img, -1, 1)
       if step % 30 == 0:

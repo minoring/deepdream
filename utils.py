@@ -26,3 +26,4 @@ def create_gif():
       writer.append_data(image)
     image = imageio.imread(filename)
     writer.append_data(image)
+  

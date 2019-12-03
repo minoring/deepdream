@@ -11,3 +11,4 @@ def define_flags():
   flags.DEFINE_float('learning_rate', 0.001, 'Learning rate')
   flags.DEFINE_integer('num_octaves', 3, 'Number of scaling the image')
   flags.DEFINE_float('octave_scale', 1.3, 'Increasing size of the image')
+  flags.DEFINE_integer('tile_size', 512, 'Tile size of calculating gradient')
