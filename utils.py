@@ -7,5 +7,5 @@ def save_img(img, step, loss):
   plt.imshow(img)
   plt.axis('off')
   plt.title('Step {} Loss {}'.format(step, loss))
-  plt.savefig('./sample/{}step_img.jpg'.format(step))
+  plt.savefig('./sample/{}_step.jpg'.format(step))
   plt.close('all')

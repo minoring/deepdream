@@ -18,7 +18,7 @@ FLAGS = flags.FLAGS
 
 
 def train(model, img, num_steps, learning_rate):
-  for step in range(num_steps):
+  for step in range(num_steps + 1):
     loss, img = training_step(model, img, learning_rate)
 
     if step % 100 == 0:
