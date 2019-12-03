@@ -12,10 +12,22 @@ def download_image(data_dir, url, target_size=None):
   img = tf.keras.preprocessing.image.load_img(image_path,
                                               target_size=target_size)
 
-  return np.array(img)
+  return tf.keras.preprocessing.image.img_to_array(img)
 
 
 def deprocess_img(images):
   """Convert range of image from [-1, 1] into [0, 255]"""
   images = 255 * ((images + 1.0) / 2.0)
   return tf.cast(images, tf.uint8)
+
+
+def random_roll(img, maxroll):
+  """Randomly roll the image to avoid tiled boundaries"""
+  shift = tf.random.uniform(shape=[2],
+                            minval=-maxroll,
+                            maxval=maxroll,
+                            dtype=tf.int32)
+  shift_down, shift_right = shift[0], shift[1]
+  img_rolled = tf.roll(tf.roll(img, shift_right, axis=1), shift_down, axis=0)
+
+  return shift_down, shift_right, img_rolled
