@@ -5,7 +5,7 @@ def define_flags():
   flags.DEFINE_string('data_dir', 'data', 'Directory path of dataset')
   flags.DEFINE_string(
       'URL',
-      'white_pekingese.jpg',
+      'Green_Sea_Turtle_grazing_seagrass.jpg',
       'URL of the image')
   flags.DEFINE_integer('target_height', 320, 'Height of target image')
   flags.DEFINE_integer('target_width', 300, 'Height of target width')
