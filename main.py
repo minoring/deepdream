@@ -41,7 +41,7 @@ def train(model, img, num_steps, learning_rate):
         img = img + grads * learning_rate
         img = tf.clip_by_value(img, -1, 1)
         if step % 30 == 0:
-          title = 'Octave{}_Step{}'.format(octave, step)
+          title = 'Step{}_{}'.format(octave, step)
           print(title)
           save_img(deprocess_img(img), title)
   else:

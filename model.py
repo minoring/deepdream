@@ -13,7 +13,9 @@ def deepdream():
   names = ['mixed3', 'mixed5']
   layers = [base_model.get_layer(name).output for name in names]
   # Create the feature extraction model
-  return tf.keras.Model(inputs=base_model.input, outputs=layers)
+  model = tf.keras.Model(inputs=base_model.input, outputs=layers)
+  tf.keras.utils.plot_model(model, to_file='misc/model.png')
+  return model
 
 
 def loss_fn(img, model):
