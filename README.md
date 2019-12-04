@@ -35,4 +35,7 @@ This will allow patterns generated at smaller scales to be incorporated into pat
 - https://www.tensorflow.org/tutorials/generative/deepdream
 
 ### Model Architecture
+Code: [Inception V3 model for Keras](https://github.com/keras-team/keras-applications/blob/master/keras_applications/inception_v3.py)
+
+Paper: [Rethinking the Inception Architecture for Computer Vision](http://arxiv.org/abs/1512.00567) (CVPR 2016)
 ![](https://github.com/minoring/deepdream/blob/master/misc/model.png)
