@@ -20,7 +20,7 @@ def create_gif():
 
   with imageio.get_writer(anim_file, mode='I') as writer:
     filenames = glob.glob('sample/*.jpg')
-    filenames = sorted(filenames)
+    filenames = sorted(filenames, key=lambda filename: int(filename[11:-4]))
     for filename in filenames:
       image = imageio.imread(filename)
       writer.append_data(image)
