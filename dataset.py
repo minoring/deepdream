@@ -1,7 +1,6 @@
 import os
 
 import tensorflow as tf
-import numpy as np
 
 
 def download_image(data_dir, url, target_size=None):

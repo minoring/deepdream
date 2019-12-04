@@ -5,7 +5,6 @@ from absl import app
 from absl import flags
 
 import tensorflow as tf
-import numpy as np
 
 from flags import define_flags
 from dataset import download_image
@@ -30,19 +29,29 @@ def train(model, img, num_steps, learning_rate):
   # Convert the range expected by the model.
   img = tf.keras.applications.inception_v3.preprocess_input(img)
 
-  for octave in range(0, FLAGS.num_octaves):
-    if octave > 0:
-      new_size = tf.cast(tf.convert_to_tensor(img.shape[:-1]),
-                         tf.float32) * FLAGS.octave_scale
-      img = tf.image.resize(img, tf.cast(new_size, tf.int32))
+  if FLAGS.scaling:
+    for octave in range(0, FLAGS.num_octaves):
+      if octave > 0:
+        new_size = tf.cast(tf.convert_to_tensor(img.shape[:-1]),
+                           tf.float32) * FLAGS.octave_scale
+        img = tf.image.resize(img, tf.cast(new_size, tf.int32))
 
+      for step in range(num_steps + 1):
+        grads = get_tiled_gradient(model, img, FLAGS.tile_size)
+        img = img + grads * learning_rate
+        img = tf.clip_by_value(img, -1, 1)
+        if step % 30 == 0:
+          title = 'Octave{}_Step{}'.format(octave, step)
+          print(title)
+          save_img(deprocess_img(img), title)
+  else:
     for step in range(num_steps + 1):
-      grads = get_tiled_gradient(model, img, FLAGS.tile_size)
-      img = img + grads * learning_rate
+      img = training_step(model, img, learning_rate)
       img = tf.clip_by_value(img, -1, 1)
       if step % 30 == 0:
-        print('Octave {} Step {}'.format(octave, step))
-        save_img(deprocess_img(img), step, octave)
+        title = 'Step{}'.format(step)
+        print(title)
+        save_img(deprocess_img(img), title)
 
 
 @tf.function
@@ -56,7 +65,7 @@ def training_step(model, img, learning_rate):
   img = img + grads * learning_rate
   img = tf.clip_by_value(img, -1, 1)
 
-  return loss, img
+  return img
 
 
 @tf.function
@@ -64,7 +73,7 @@ def get_tiled_gradient(model, img, tile_size=512):
   """Compute the gradient for each tile.
 
   When the image increases in size, so will time and memory necessary to perform
-  the gradient calculation. 
+  the gradient calculation.
   To avoid this issue, split the image into tiles and
   compute the gradient for each tile.
   Makes work on very large images, or many octaves.
