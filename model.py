@@ -14,7 +14,8 @@ def deepdream():
   layers = [base_model.get_layer(name).output for name in names]
   # Create the feature extraction model
   model = tf.keras.Model(inputs=base_model.input, outputs=layers)
-  tf.keras.utils.plot_model(model, to_file='misc/model.png')
+  # Save model architecture as png.
+  # tf.keras.utils.plot_model(model, to_file='misc/model.png')
   return model
 
 
