@@ -20,12 +20,12 @@ Training Without scaling          |  Same number of steps but add scaling
 ![](https://github.com/minoring/deepdream/blob/master/misc/Step900.jpg)  |  ![](https://github.com/minoring/deepdream/blob/master/misc/Step900_scaling.jpg)
 ![](https://github.com/minoring/deepdream/blob/master/misc/training.gif) | ![](https://github.com/minoring/deepdream/blob/master/misc/training_scaling.gif)
 
-You can see that first without scaling
-- The output is noisy.
-- The image is low resolution.
-- The patterns appear like they're all happening at the same granularity.
+You can see that without scaling's output
+- Noisy.
+- Low resolution.
+- Patterns appear like they're all happening at the same granularity.
 
-Addresses these problems is applying gradient ascent at different scales. 
+Addresses these problems by applying gradient ascent at different scales. 
 This will allow patterns generated at smaller scales to be incorporated into patterns at higher scales and filled in with additional detail.
 
 ## References
